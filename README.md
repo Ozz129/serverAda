@@ -1,63 +1,57 @@
-# serverAda
+// A partir de este archivo se va a ejecutar toda la aplicación
 
-// http -> Herramienta que nos permite crear servidores
-
+//Importamos http
 const http = require('http');
-const port = 3000;
+const puerto = 3000;
 const host = 'localhost';
 
+
 /**
- * solicitud -> de recibir la informacion desde el cliente
- * request
+ * createServer -> Es la funcion que se encarga de crear el servidor
  * 
- * respuesta -> de enviar la informacion hacia el cliente
- * response
+ * Callback recibe dos objetos:
+ * 
+ * req (request = solicitud) -> viene desde el cliente
+ * 
+ * res (response = respuesta) -> viene desde els ervidor
  */
+
+// Configuramos el servidor
 const server = http.createServer((req, res) => {
     /**
-     * method -> Tipo de peticion (POST, PUT, GET, DELETE)
-     * url ----> Al endpoint (la direccion exacta de nuestro recurso)
+     * tipo de solicitud = metodo = req.method
+     * 
+     * url = destino del recurso = req.url
+     * 
+     * 
+     * /usuarios, GET
+     * /usuarios, POST
      */
 
-    if (req.method == 'GET' && req.url == '/users') {
+    if (req.method === 'GET' && req.url === '/usuarios' ) {
+        // Devolver todos los usuarios que tengo en base de datos
+
         /**
-         * La logica debe encargarse de devolver informacion al usuario
-         * informacion de users
+         * Ejemplo:
+         * Si la conexion a la base de datos funciona y obtengo a los usuarios
+         * devuelvo 200
+         * Si la conexion a la base de datos no funciona devuelvo 500
          */
-
-         const users = [
-            { name: 'Juan', email: 'juan@mail.com' },
-            { name: 'Maria', email: 'maria@mail.com' },
-            { name: 'Carlos', email: 'carlos@mail.com' },
-          ];
-
-          res.statusCode = 200;
-          res.end(JSON.stringify(users))
-    } else if (req.method == 'POST' && req.url == '/users') {
-        /**
-         * Reciba informacion y almacenela
-         */
-
-        let body = '';
-        req.on('data', (chunk) => {
-            body += chunk.toString();
-        });
-
-        req.on('end', () => {
-            const user = JSON.parse(body);
-            console.log(`Usuario recibido: ${user.name} - ${user.email}`);
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: 'Usuario creado correctamente' }));
-        });
+        res.statusCode = 200;
+        res.end('Aqui se enviará la lista de usuarios')
+    } else if(req.method === 'POST' && req.url === '/usuarios' ) {
+        res.statusCode = 200;
+        res.end('Aqui se almacenará un usuario')
+    } else {
+        res.statusCode = 404;
+        res.end('Recurso no encontrado')
     }
-})
 
-server.listen(port, host, () => {
-    console.log(`Estoy escuchando en ${host} la puerta ${port}`)
 })
 
 
-
-
-
+// Encedemos el servidor
+server.listen(puerto, host, () => {
+    console.log('Servidor encendido')
+})
 
